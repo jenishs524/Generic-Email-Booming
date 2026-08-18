@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booming Dashboard Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    
+    <aside class="sidebar">
+        <div class="brand">Email Sender Pro</div>
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="smtp-tab">Email Server Settings</button>
+            <button class="tab-btn" data-tab="content-tab">Email Content</button>
+            <button class="tab-btn" data-tab="recipients-tab">Email List</button>
+            <button class="tab-btn" data-tab="controls-tab">Sending Options</button>
+            <button class="tab-btn" data-tab="autobomb-tab" style="color: var(--danger); font-weight: bold; margin-top: 1rem; border: 1px solid var(--danger);">🔥 Quick Auto-Bomb</button>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="header-bar">
+            <div class="status-badge" id="app-status">Ready to Send</div>
+        </header>
+
+        <div class="content-wrapper">
+            
+            <!-- SMTP Tab -->
+            <div class="tab-content active" id="smtp-tab">
+                <h2 class="section-title">Email Server Settings (Bulk)</h2>
+                
+                <div class="form-grid" style="margin-bottom: 1rem; padding: 1rem; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border-color);">
+                    <div class="form-group">
+                        <label>SMTP Server</label>
+                        <input type="text" id="add-smtp-server" placeholder="smtp.gmail.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Port</label>
+                        <input type="number" id="add-smtp-port" placeholder="587">
+                    </div>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="add-smtp-user" placeholder="email@gmail.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="text" id="add-smtp-pass" placeholder="password123">
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label>From Name & Email</label>
+                        <input type="text" id="add-smtp-from" placeholder="My Name <email@gmail.com>">
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <button class="btn btn-secondary" id="btn-add-smtp" type="button" style="width: 100%;">+ Add SMTP Account to List</button>
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Bulk SMTP Accounts List</label>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">(You can also edit manually. Format: server:port:user:password:from_email)</p>
+                    <textarea id="bulk-smtp" rows="10" placeholder="smtp.mail.com:587:user@mail.com:pass123:Sender <user@mail.com>"></textarea>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="use-ssl">
+                        <label for="use-ssl">Use SSL (Port 465) for ALL</label>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="use-tls" checked>
+                        <label for="use-tls">Use STARTTLS (Port 587) for ALL</label>
+                    </div>
+                    <div class="form-group">
+                        <label>Timeout (seconds to wait if slow)</label>
+                        <input type="number" id="smtp-timeout" value="30">
+                    </div>
+                </div>
+
+                <div class="form-grid" style="margin-top: 1rem; padding: 1rem; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border-color);">
+                    <div class="form-group checkbox-group" style="grid-column: 1 / -1;">
+                        <input type="checkbox" id="randomize-from">
+                        <label for="randomize-from">Generate Random "From" Email (Spoofing)</label>
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label>Random From Domain (leave empty for random domains e.g. example.com)</label>
+                        <input type="text" id="random-from-domain" placeholder="example.com">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Tab -->
+            <div class="tab-content" id="content-tab">
+                <h2 class="section-title">Email Content</h2>
+                <div class="form-group">
+                    <label>Email Subject</label>
+                    <input type="text" id="email-subject">
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="is-html">
+                    <label for="is-html">This is an HTML email (contains code)</label>
+                </div>
+                <div class="form-group">
+                    <label>Email Message</label>
+                    <textarea id="email-body" rows="8"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Attachments</label>
+                    <div style="display: flex; gap: 1rem; align-items: center; margin-top: 0.5rem;">
+                        <input type="file" id="file-input" multiple style="display:none;">
+                        <button class="btn btn-secondary" onclick="document.getElementById('file-input').click()">Upload Files</button>
+                    </div>
+                    <ul id="attachment-list" class="attachment-list"></ul>
+                </div>
+            </div>
+
+            <!-- Recipients Tab -->
+            <div class="tab-content" id="recipients-tab">
+                <h2 class="section-title">Email List</h2>
+                <div class="form-group checkbox-group" style="margin-bottom: 0.5rem;">
+                    <input type="checkbox" id="auto-bomb-toggle">
+                    <label for="auto-bomb-toggle">ENABLE QUICK AUTO BOMB (Random Email Generation)</label>
+                </div>
+                <div class="form-group full-width">
+                    <label>Target Email Addresses (put one email per line)</label>
+                    <textarea id="recipients-list" rows="10"></textarea>
+                </div>
+                <div class="controls">
+                    <input type="file" id="recipients-file" accept=".txt,.csv" style="display: none;">
+                    <button class="btn btn-secondary" onclick="document.getElementById('recipients-file').click()">Load Emails From File</button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('recipients-list').value=''">Clear Box</button>
+                </div>
+            </div>
+
+            <!-- Controls Tab -->
+            <div class="tab-content" id="controls-tab">
+                <h2 class="section-title">Sending Options</h2>
+                
+                <div class="form-group full-width" style="border: 1px solid var(--accent-primary); padding: 1rem; margin-bottom: 1.5rem; background: rgba(0,255,0,0.05);">
+                    <label style="color: var(--accent-primary);">[OPTIONAL] Scheduled Start Time (Leave blank to start immediately)</label>
+                    <input type="datetime-local" id="schedule-time" style="margin-top: 0.5rem; border-color: var(--accent-primary);">
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Total Emails to Send (0 = infinite)</label>
+                        <input type="number" id="limit-send" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Stop Sending After (seconds, 0 = never stop)</label>
+                        <input type="number" id="time-limit" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Number of Sending Threads (speed)</label>
+                        <input type="number" id="thread-count" value="3">
+                    </div>
+                    <div class="form-group">
+                        <label>Wait Time Between Emails (seconds)</label>
+                        <input type="number" step="0.1" id="send-delay" value="0">
+                    </div>
+                </div>
+                <p style="color: var(--warning); font-size: 0.85rem; margin-top: 0.5rem;">⚠️ Note: Setting thread count high with zero wait time may cause email providers to block you for spamming.</p>
+            </div>
+
+            <!-- Auto-Bomb Tab -->
+            <div class="tab-content" id="autobomb-tab">
+                <h2 class="section-title" style="color: var(--danger);">🔥 Quick Auto-Bomb (Unlimited Mode)</h2>
+                
+                <div style="background: rgba(239, 68, 68, 0.1); border-left: 4px solid var(--danger); padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px;">
+                    <p style="margin: 0; color: #fca5a5; font-size: 0.9rem; line-height: 1.5;">
+                        <strong>WARNING:</strong> This mode will repeatedly send a highly professional HTML template to the target email address at maximum speed. <br>
+                        - Uses all configured SMTP accounts.<br>
+                        - <strong>Automatically</strong> generates completely random 'From' spoofing emails.<br>
+                        - Sends an infinite loop until you click Stop.
+                    </p>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Target Recipient Email (Victim)</label>
+                    <input type="text" id="autobomb-target" placeholder="target@example.com" style="font-size: 1.1rem; padding: 0.75rem; border-color: var(--danger);">
+                </div>
+
+                <div class="controls" style="margin-top: 2rem;">
+                    <button class="btn btn-danger" id="btn-start-autobomb" style="width: 100%; padding: 1rem; font-size: 1.2rem; font-weight: bold; text-transform: uppercase; letter-spacing: 2px;">
+                        ⚠️ INITIATE UNLIMITED AUTO-BOMB ⚠️
+                    </button>
+                </div>
+            </div>
+
+            <!-- Global Dashboard Panel -->
+            <div class="dashboard-panel">
+                <div class="controls">
+                    <button class="btn btn-primary" id="btn-start">▶ START SENDING</button>
+                    <button class="btn btn-danger" id="btn-stop" disabled>■ STOP</button>
+                    <button class="btn btn-secondary" id="btn-save">Save Settings</button>
+                    <button class="btn btn-secondary" id="btn-load">Load Settings</button>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                
+                <div class="stats">
+                    <span>Delivered: <strong id="stat-sent">0</strong></span>
+                    <span>Failed: <strong id="stat-failed">0</strong></span>
+                    <span>Total Emails to Send: <strong id="stat-total">0</strong></span>
+                </div>
+
+                <div class="terminal-wrapper">
+                    <div class="terminal-header">
+                        <span>root@boomer:~# ./execute.sh</span>
+                        <button class="btn-clear-terminal" id="btn-clear-logs" title="Clear terminal output">🧹 CLEAN</button>
+                    </div>
+                    <div class="log-window" id="log-window"></div>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+    
+    <script src="/static/app.js"></script>
+</body>
+</html>
